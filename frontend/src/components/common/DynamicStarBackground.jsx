@@ -34,63 +34,55 @@ const DynamicStarBackground = () => {
     window.addEventListener('resize', handleResize);
     window.addEventListener('mousemove', handleMouseMove);
 
-    class Star {
-      constructor() {
+    function Star() {
+      this.x = Math.random() * width;
+      this.y = Math.random() * height;
+      this.z = Math.random() * width;
+      this.radius = Math.random() * 1.5 + 0.5;
+      this.baseAlpha = Math.random() * 0.5 + 0.5;
+    }
+
+    Star.prototype.update = function() {
+      this.z -= 1.5;
+      if (this.z <= 0) {
+        this.z = width;
         this.x = Math.random() * width;
         this.y = Math.random() * height;
-        this.z = Math.random() * width; // Z axis for depth
-        this.radius = Math.random() * 1.5 + 0.5;
-        this.baseAlpha = Math.random() * 0.5 + 0.5; 
       }
+    };
 
-      update() {
-        this.z -= 1.5; // Travel speed towards the viewer
-        if (this.z <= 0) {
-          this.z = width;
-          this.x = Math.random() * width;
-          this.y = Math.random() * height;
-        }
+    Star.prototype.draw = function() {
+      let x, y, radius;
+      
+      mouse.x += (mouse.targetX - mouse.x) * 0.05;
+      mouse.y += (mouse.targetY - mouse.y) * 0.05;
+
+      const offsetX = (mouse.x - width / 2) * (1 - this.z / width) * 0.2;
+      const offsetY = (mouse.y - height / 2) * (1 - this.z / width) * 0.2;
+
+      x = (this.x - width / 2) * (width / this.z) + width / 2 + offsetX;
+      y = (this.y - height / 2) * (width / this.z) + height / 2 + offsetY;
+      radius = this.radius * (width / this.z);
+
+      const alpha = Math.max(0, Math.min(1, this.baseAlpha * (1 - this.z / width) * 1.5));
+      
+      const isTeal = Math.random() > 0.5;
+      const isViolet = Math.random() > 0.8;
+      
+      ctx.beginPath();
+      ctx.arc(x, y, Math.max(0.1, radius), 0, Math.PI * 2);
+      
+      if (isTeal) {
+         ctx.fillStyle = `rgba(20, 184, 166, ${alpha})`;
+      } else if (isViolet) {
+         ctx.fillStyle = `rgba(139, 92, 246, ${alpha})`;
+      } else {
+         ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
       }
-
-      draw() {
-        let x, y, radius;
-        
-        // Smooth mouse follow (easing)
-        mouse.x += (mouse.targetX - mouse.x) * 0.05;
-        mouse.y += (mouse.targetY - mouse.y) * 0.05;
-
-        // Parallax depth calculation: closer stars move faster than distant stars
-        const offsetX = (mouse.x - width / 2) * (1 - this.z / width) * 0.2;
-        const offsetY = (mouse.y - height / 2) * (1 - this.z / width) * 0.2;
-
-        // Perspective 3D -> 2D projection
-        x = (this.x - width / 2) * (width / this.z) + width / 2 + offsetX;
-        y = (this.y - height / 2) * (width / this.z) + height / 2 + offsetY;
-        radius = this.radius * (width / this.z);
-
-        // Alpha fades as it gets closer to camera or further away
-        const alpha = Math.max(0, Math.min(1, this.baseAlpha * (1 - this.z / width) * 1.5));
-        
-        // Slightly Teal tint for stars #14B8A6 OR Violet #8B5CF6
-        // rgba(20, 184, 166, alpha) or rgba(139, 92, 246, alpha)
-        const isTeal = Math.random() > 0.5;
-        const isViolet = Math.random() > 0.8;
-        
-        ctx.beginPath();
-        ctx.arc(x, y, Math.max(0.1, radius), 0, Math.PI * 2);
-        
-        if (isTeal) {
-           ctx.fillStyle = `rgba(20, 184, 166, ${alpha})`;
-        } else if (isViolet) {
-           ctx.fillStyle = `rgba(139, 92, 246, ${alpha})`;
-        } else {
-           ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-        }
-        
-        ctx.fill();
-        ctx.closePath();
-      }
-    }
+      
+      ctx.fill();
+      ctx.closePath();
+    };
 
     // Networking lines for close stars to give "AI/Tech" feel
     const drawConnections = () => {

@@ -14,7 +14,6 @@ const AnalyzePage = () => {
   const [step, setStep] = useState(1); // 1: Upload, 2: JD Input, 3: Analyzing
 
   // Resume state
-  const [resumeFile, setResumeFile] = useState(null);
   const [uploadedResume, setUploadedResume] = useState(null);
   const [savedResumes, setSavedResumes] = useState([]);
   const [selectedResumeId, setSelectedResumeId] = useState('');
@@ -29,7 +28,6 @@ const AnalyzePage = () => {
   const [jdError, setJdError] = useState('');
 
   // Analysis state
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   // Load existing resumes
   useEffect(() => {
@@ -45,7 +43,6 @@ const AnalyzePage = () => {
   }, []);
 
   const handleFileAccepted = async (file) => {
-    setResumeFile(file);
     setUploadError('');
     setIsUploading(true);
     setUploadProgress(0);
@@ -62,7 +59,6 @@ const AnalyzePage = () => {
       const msg = err.response?.data?.message || 'Failed to upload resume. Please try again.';
       setUploadError(msg);
       toast.error(msg);
-      setResumeFile(null);
     } finally {
       setIsUploading(false);
     }
@@ -93,7 +89,6 @@ const AnalyzePage = () => {
       return;
     }
 
-    setIsAnalyzing(true);
     setStep(3);
 
     try {
@@ -109,7 +104,6 @@ const AnalyzePage = () => {
     } catch (err) {
       const msg = err.response?.data?.message || 'Analysis failed. Please try again.';
       toast.error(msg);
-      setIsAnalyzing(false);
       setStep(2);
     }
   };

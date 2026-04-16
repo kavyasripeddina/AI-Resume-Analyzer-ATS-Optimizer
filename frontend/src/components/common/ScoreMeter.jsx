@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 // Score color utility
 export const getScoreColor = (score) => {
   if (score >= 80) return '#10B981';

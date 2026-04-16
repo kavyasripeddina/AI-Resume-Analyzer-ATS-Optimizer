@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { analysisService } from '../services/services';
-import ScoreMeter, { ProgressBar, getScoreColor, getScoreLabel } from '../components/common/ScoreMeter';
+import ScoreMeter, { getScoreColor } from '../components/common/ScoreMeter';
 import KeywordAnalysis from '../components/analysis/KeywordAnalysis';
 import AIImprovements from '../components/analysis/AIImprovements';
 import { format } from 'date-fns';
@@ -15,7 +15,6 @@ const Skeleton = ({ h = '20px', w = '100%' }) => (
 
 const AnalysisDetailPage = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const reportRef = useRef();
 
   const [analysis, setAnalysis] = useState(null);
@@ -79,7 +78,7 @@ const AnalysisDetailPage = () => {
       pdf.save(fileName.replace(/\s+/g, '_'));
       toast.dismiss();
       toast.success('PDF report downloaded! 📥');
-    } catch (err) {
+    } catch {
       toast.dismiss();
       toast.error('Failed to generate PDF. Please try again.');
     } finally {
@@ -116,7 +115,6 @@ const AnalysisDetailPage = () => {
   }
 
   const scoreColor = getScoreColor(analysis.atsScore);
-  const { label: scoreLabel } = getScoreLabel(analysis.atsScore);
 
   const breakdownItems = [
     { label: 'Keyword Density', key: 'keywordMatch', desc: 'Industry terms, hard skills, software matches' },
@@ -173,7 +171,7 @@ const AnalysisDetailPage = () => {
                  <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '1.4rem', fontWeight: '800', margin: 0 }}>Content Strength Analysis</h2>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
-                {breakdownItems.map(({ label, key, desc }, idx) => {
+                {breakdownItems.map(({ label, key, desc }) => {
                   const val = analysis.scoreBreakdown?.[key] || 0;
                   const max = getMaxBreakdown(key);
                   const pct = Math.round((val / max) * 100);

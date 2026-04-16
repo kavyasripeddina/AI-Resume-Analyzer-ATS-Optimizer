@@ -19,7 +19,7 @@ const BuilderPage = () => {
       try {
         const parsed = JSON.parse(saved);
         if (parsed.length > 0) return parsed;
-      } catch (e) {
+      } catch {
         console.error("Failed to parse profiles");
       }
     }
