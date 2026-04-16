@@ -1,13 +1,12 @@
 const path = require('path');
 const Resume = require('../models/Resume');
 const AppError = require('../utils/AppError');
-const { parseResume, deleteFile } = require('../utils/resumeParser');
+const { parseResume } = require('../utils/resumeParser');
 
 /**
  * POST /api/resumes/upload
  */
 const uploadResume = async (req, res, next) => {
-  const filePath = req.file ? req.file.path : null;
 
   try {
     const file = req.file;
@@ -16,22 +15,20 @@ const uploadResume = async (req, res, next) => {
 
     // Validate file type one more time
     if (!['pdf', 'docx'].includes(fileType)) {
-      deleteFile(filePath);
       return next(new AppError('Unsupported file format. Only PDF and DOCX files are allowed.', 400));
     }
 
     // Parse the resume
     let parsedData;
     try {
-      parsedData = await parseResume(file.path, fileType);
+      // Pass the fully loaded memory buffer instead of the file path
+      parsedData = await parseResume(file, fileType);
     } catch (parseError) {
-      deleteFile(filePath);
       return next(parseError);
     }
 
     // Check if extracted text is meaningful
     if (!parsedData.text || parsedData.text.trim().length < 20) {
-      deleteFile(filePath);
       return next(new AppError(
         'Could not extract text from this file. Please ensure your resume contains text (not just images).',
         422
@@ -47,7 +44,6 @@ const uploadResume = async (req, res, next) => {
     });
 
     if (recentDuplicate) {
-      deleteFile(filePath);
       return res.status(200).json({
         success: true,
         message: 'This resume was already uploaded recently.',
@@ -62,7 +58,7 @@ const uploadResume = async (req, res, next) => {
       originalName: file.originalname,
       fileType,
       fileSize: file.size,
-      filePath: file.path,
+      filePath: 'memory-storage', // No path anymore
       extractedText: parsedData.text,
       wordCount: parsedData.wordCount,
       sections: parsedData.sections,
@@ -91,8 +87,6 @@ const uploadResume = async (req, res, next) => {
       },
     });
   } catch (error) {
-    // Clean up file on error
-    if (filePath) deleteFile(filePath);
     next(error);
   }
 };
@@ -163,9 +157,7 @@ const deleteResume = async (req, res, next) => {
       return next(new AppError('Resume not found or you do not have permission to delete it.', 404));
     }
 
-    // Delete physical file
-    deleteFile(resume.filePath);
-
+    // No physical file to delete anymore, handled automatically
     // Delete from DB
     await Resume.deleteOne({ _id: resume._id });
 

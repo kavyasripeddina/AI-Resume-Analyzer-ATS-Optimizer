@@ -1,14 +1,13 @@
 import axios from 'axios';
 
-const API_BASE = '/api';
-
+// Use Vite's environment variable for the API base URL, or default to the current host + /api
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 const api = axios.create({
   baseURL: API_BASE,
   timeout: 30000,
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Request interceptor — attach token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('ats_token');
@@ -20,12 +19,10 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor — handle auth errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Clear auth data and redirect to login
       localStorage.removeItem('ats_token');
       localStorage.removeItem('ats_user');
       if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/register')) {

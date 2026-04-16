@@ -1,17 +1,14 @@
 const pdfParse = require('pdf-parse');
 const mammoth = require('mammoth');
-const fs = require('fs');
 const path = require('path');
 const AppError = require('./AppError');
 
 /**
  * Extract text from a PDF file
  */
-const extractFromPDF = async (filePath) => {
+const extractFromPDF = async (fileBuffer) => {
   try {
-    const fileBuffer = fs.readFileSync(filePath);
-
-    if (fileBuffer.length === 0) {
+    if (!fileBuffer || fileBuffer.length === 0) {
       throw new AppError('The uploaded PDF file is empty.', 400);
     }
 
@@ -48,11 +45,9 @@ const extractFromPDF = async (filePath) => {
 /**
  * Extract text from a DOCX file
  */
-const extractFromDOCX = async (filePath) => {
+const extractFromDOCX = async (fileBuffer) => {
   try {
-    const fileBuffer = fs.readFileSync(filePath);
-
-    if (fileBuffer.length === 0) {
+    if (!fileBuffer || fileBuffer.length === 0) {
       throw new AppError('The uploaded DOCX file is empty.', 400);
     }
 
@@ -118,15 +113,15 @@ const extractSections = (text) => {
 /**
  * Main function to parse resume based on file type
  */
-const parseResume = async (filePath, fileType) => {
-  const ext = fileType || path.extname(filePath).toLowerCase().replace('.', '');
+const parseResume = async (file, fileType) => {
+  const ext = fileType || path.extname(file.originalname).toLowerCase().replace('.', '');
 
   let result;
 
   if (ext === 'pdf') {
-    result = await extractFromPDF(filePath);
+    result = await extractFromPDF(file.buffer);
   } else if (ext === 'docx' || ext === 'doc') {
-    result = await extractFromDOCX(filePath);
+    result = await extractFromDOCX(file.buffer);
   } else {
     throw new AppError(`Unsupported file type: ${ext}. Please upload a PDF or DOCX file.`, 400);
   }
@@ -139,17 +134,4 @@ const parseResume = async (filePath, fileType) => {
   };
 };
 
-/**
- * Clean up uploaded file
- */
-const deleteFile = (filePath) => {
-  try {
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
-  } catch (err) {
-    console.error('Failed to delete file:', err.message);
-  }
-};
-
-module.exports = { parseResume, extractSections, deleteFile };
+module.exports = { parseResume, extractSections };
