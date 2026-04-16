@@ -7,13 +7,11 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+
+  // ✅ Safe: keep server config but remove proxy
   server: {
     port: 5173,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-      },
-    },
+    proxy: {}
   },
+
 })
