@@ -1,0 +1,22 @@
+{
+  "name": "ats-optimizer-backend",
+  "version": "1.0.0",
+  "description": "AI Resume Analyzer & ATS Optimizer - Backend API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "lint": "eslint ."
+  },
+  "keywords": [
+    "ats",
+    "resume",
+    "ai",
+    "nlp"
+  ],
+  "author": "ATS Optimizer",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
