@@ -12,10 +12,7 @@ const extractFromPDF = async (fileBuffer) => {
       throw new AppError('The uploaded PDF file is empty.', 400);
     }
 
-    const data = await pdfParse(fileBuffer, {
-      max: 0, // parse all pages
-    });
-
+    const data = await pdfParse(fileBuffer);
     const text = data.text || '';
 
     if (!text || text.trim().length < 20) {

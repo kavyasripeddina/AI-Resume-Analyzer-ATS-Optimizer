@@ -54,7 +54,7 @@ const uploadResume = async (req, res, next) => {
     // Save to database
     const resume = await Resume.create({
       user: req.user.id,
-      fileName: file.filename,
+      fileName: file.originalname,
       originalName: file.originalname,
       fileType,
       fileSize: file.size,

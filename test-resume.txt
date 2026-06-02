@@ -1,0 +1,43 @@
+John Doe
+Senior Software Engineer | Full Stack Developer
+
+PROFESSIONAL SUMMARY
+Experienced Full Stack Developer with 5+ years of expertise in building scalable web applications using JavaScript, React, and Node.js. Proven track record of developing high-performance systems and leading technical teams.
+
+TECHNICAL SKILLS
+Languages: JavaScript, Python, TypeScript, SQL
+Frontend: React, HTML5, CSS3, TailwindCSS, Framer Motion
+Backend: Node.js, Express.js, REST APIs
+Databases: MongoDB, PostgreSQL
+Cloud: AWS, Vercel, Google Cloud
+Tools: Git, Docker, CI/CD pipelines
+
+PROFESSIONAL EXPERIENCE
+
+Senior Developer
+Tech Company Inc. | Jan 2023 - Present
+- Architected and deployed scalable microservices handling 1M+ daily requests
+- Led team of 5 developers in building ATS optimization platform
+- Improved application performance by 40% through optimization
+- Implemented CI/CD pipelines reducing deployment time by 60%
+
+Full Stack Developer
+StartUp Solutions | Jun 2021 - Dec 2022
+- Developed full-stack applications using React and Node.js
+- Built REST APIs and integrated third-party services
+- Managed MongoDB databases and implemented caching strategies
+- Collaborated with UI/UX designers for seamless user experiences
+
+Junior Developer
+Web Services LLC | Jan 2020 - May 2021
+- Developed responsive web applications using React
+- Worked on backend services using Express.js
+- Participated in code reviews and agile development cycles
+
+EDUCATION
+Bachelor of Science in Computer Science
+State University | 2019
+
+CERTIFICATIONS
+- AWS Certified Solutions Architect
+- React Professional Certification
